@@ -80,7 +80,8 @@ module Tire
     def get_mapping
       @response = Configuration.client.get("#{url}/_mapping")
       result = MultiJson.decode(@response.body)[@name]
-      @response.success? ? result : false
+      return false unless @response.success?
+      result.has_key?("mappings") ? result["mappings"] : result
     ensure
       curl = %Q|curl -X GET "#{url}/_mapping?pretty"|
       logged("GET MAPPING", curl)
